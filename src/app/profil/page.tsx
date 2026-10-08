@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
+import TeleverserCV from "@/components/TeleverserCV";
 
 type FormState = {
   first_name: string;
@@ -191,7 +192,7 @@ export default function ProfilPage() {
             )}
           </label>
         ))}
-
+        <TeleverserCV />
         <button
           type="submit"
           disabled={saving}

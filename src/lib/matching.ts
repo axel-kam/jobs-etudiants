@@ -5,6 +5,7 @@ export type ProfilMatching = {
   skills: string;
   experience: string;
   min_salary: number | null;
+  other_criteria?: string;
 };
 
 export type OffreMatching = {
@@ -33,6 +34,12 @@ function termes(texte: string) {
     .filter((t) => t.length >= 3);
 }
 
+function extraireExclusions(texte: string) {
+  const ligne = texte.split("\n").find((l) => /^\s*exclure\s*:/i.test(l));
+  if (!ligne) return [];
+  return termes(ligne.replace(/^\s*exclure\s*:/i, ""));
+}
+
 export function calculerScore(
   profil: ProfilMatching,
   offre: OffreMatching
@@ -43,6 +50,17 @@ export function calculerScore(
   const titre = normaliser(offre.titre);
   const description = normaliser(offre.description);
   const lieu = normaliser(offre.lieu);
+
+  // 0. Mots exclus : l'offre est écartée tout de suite
+  const exclusions = extraireExclusions(profil.other_criteria ?? "");
+  const texteOffre = `${titre} ${description}`;
+  const motExclu = exclusions.find((e) => texteOffre.includes(e));
+  if (motExclu) {
+    return {
+      score: 0,
+      raisons: [`✗ Offre écartée : contient « ${motExclu} »`],
+    };
+  }
 
   // 1. Type de job (45 points)
   const metiers = termes(profil.job_types);

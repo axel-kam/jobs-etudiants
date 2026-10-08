@@ -127,6 +127,7 @@ export default function OffresPage() {
       skills: p.skills ?? "",
       experience: p.experience ?? "",
       min_salary: p.min_salary ? Number(p.min_salary) : null,
+          other_criteria: p.other_criteria ?? ""
     };
 
     const params = new URLSearchParams({ motsCles, lieu });
